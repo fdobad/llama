@@ -20,9 +20,10 @@ def setup_model_parallel() -> Tuple[int, int]:
     local_rank = int(os.environ.get("LOCAL_RANK", -1))
     world_size = int(os.environ.get("WORLD_SIZE", -1))
 
-    torch.distributed.init_process_group("nccl")
+    # http://man.hubwiz.com/docset/PyTorch.docset/Contents/Resources/Documents/distributed.html
+    torch.distributed.init_process_group("gloo") # nccl mpi
     initialize_model_parallel(world_size)
-    torch.cuda.set_device(local_rank)
+    # torch.cuda.set_device(local_rank)
 
     # seed must be the same in all processes
     torch.manual_seed(1)
